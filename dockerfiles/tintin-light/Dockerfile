@@ -67,4 +67,6 @@ RUN mkdir tintin \
 
 # GO!
 
+EXPOSE 4242
+
 ENTRYPOINT /usr/local/bin/tt++ dw.tin && /bin/sh

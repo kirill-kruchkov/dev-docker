@@ -67,4 +67,6 @@ RUN sudo apt-get update \
 
 # GO!
 
+EXPOSE 6667
+
 ENTRYPOINT ["/bin/zsh"]

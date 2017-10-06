@@ -99,4 +99,6 @@ RUN mkdir tintin \
 
 # GO!
 
+EXPOSE 4242
+
 ENTRYPOINT ["/bin/zsh"]
