@@ -30,9 +30,9 @@ RUN apt-fast install --yes --quiet --no-install-recommends \
 	git tig silversearcher-ag \
 	python python-pip \
 	taskwarrior apt-transport-https \
-    weechat \
-	curl wget
+  weechat
 
+RUN apt-fast install --yes --quiet --no-install-recommends vim
 
 # Setup USER
 
