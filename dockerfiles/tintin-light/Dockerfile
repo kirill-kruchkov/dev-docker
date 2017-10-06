@@ -33,9 +33,7 @@ RUN apt-fast install --yes --quiet --no-install-recommends --fix-missing \
 	sudo man less \
 	build-essential cmake libssl-dev \
   apt-transport-https \
-	curl wget \
-  zlib1g-dev
-  #libpcre3-dev libgnutls28-dev
+	curl wget
 
 # Setup USER
 
@@ -49,6 +47,7 @@ ENV USER=void \
 	TERM=xterm-256color
 WORKDIR /home/void
 
+# Copy Discworld config
 
 COPY ./dockerfiles/tintin-light/dw.tin ./dw.tin
 
