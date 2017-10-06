@@ -4,6 +4,11 @@ FROM ubuntu:latest
 
 # UPKEEPING
 
+RUN echo "deb-src http://gb.archive.ubuntu.com/ubuntu/ xenial main restricted" >> /etc/apt/sources.list \
+  && echo "deb-src http://archive.ubuntu.com/ubuntu/ xenial main restricted" >> /etc/apt/sources.list \
+  && echo "deb-src http://security.ubuntu.com/ubuntu/ xenial-security main restricted" >> /etc/apt/sources.list \
+  && echo "deb-src http://security.ubuntu.com/ubuntu/ xenial-security multiverse" >> /etc/apt/sources.list
+
 RUN apt-get update \
 	&& apt-get --yes upgrade \
 	&& echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
@@ -12,13 +17,25 @@ RUN apt-get update \
 RUN locale-gen en_US.UTF-8
 
 
+# Install APT-FAST
+
+RUN apt-get install --yes --quiet --no-install-recommends git aria2 ca-certificates \
+	&& git clone https://github.com/ilikenwf/apt-fast /tmp/apt-fast \
+	&& cp /tmp/apt-fast/apt-fast /usr/bin \
+	&& chmod +x /usr/bin/apt-fast \
+	&& cp /tmp/apt-fast/apt-fast.conf /etc
+
+
+
 # Install PACKAGES
 
-RUN apt-get install --yes --quiet --no-install-recommends ca-certificates \
+RUN apt-fast install --yes --quiet --no-install-recommends --fix-missing \
 	sudo man less \
 	build-essential cmake libssl-dev \
-    apt-transport-https \
-	curl wget
+  apt-transport-https \
+	curl wget \
+  zlib1g-dev
+  #libpcre3-dev libgnutls28-dev
 
 # Setup USER
 
@@ -33,10 +50,13 @@ ENV USER=void \
 WORKDIR /home/void
 
 
+COPY ./dockerfiles/tintin-light/dw.tin ./dw.tin
+
+
 # Setup TinTin
 RUN mkdir tintin \
   && cd tintin \
-  && sudo apt-get --yes --quiet --no-install-recommends --fix-missing \
+  && sudo apt-fast --yes --quiet --no-install-recommends --fix-missing \
     build-dep tintin++ \
   && wget http://downloads.sourceforge.net/tintin/tintin-2.01.1.tar.gz \
   && tar -zxvf tintin-2.01.1.tar.gz \
@@ -45,7 +65,6 @@ RUN mkdir tintin \
   && make \
   && sudo make install
 
-COPY ./dockerfiles/tintin-light/dw.tin ./dw.tin
 
 # GO!
 
