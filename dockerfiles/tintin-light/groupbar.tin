@@ -1,0 +1,525 @@
+#nop ---------------------------------------------------------------------------
+#nop GROUPBAR
+#nop
+#nop ADD PARTY MEMBERS WITH partyadd membername
+#nop CLEAR PARTY WITH newparty
+#nop ---------------------------------------------------------------------------
+
+
+#var shakerded -1;
+#var ceremonialded -1;
+#var captiveded -1;
+#var hlakketded -1;
+#var bossded -1;
+#var delbertded -1;
+#var grflxded -1;
+
+#var catchname 0;
+
+
+#act {^You prepare to cast Transcendent Pneumatic Alleviator on %1.}
+{
+  #if {$catchname > 0}
+  {
+    partyadd %1;
+    #math {catchname} {$catchname -1};
+  }
+};
+
+#act {You have joined the group.$} { groupbar on }
+
+#act {^[%*] %1 has joined the group.$} { partyadd %1; }
+#act {^   %w is %2 and %3.  }  { #if { "%1" != "$playername" } { partyadd %1 } }
+
+#act {^[%*] %1 has left the group.$} { partyremove %1; }
+
+#act { You have left the group.$} { groupbar off }
+
+
+#function {show_group_bar}
+{
+  #split 6 2;
+  #nop #showme{$prompt_final}{1};
+  #loop {1} {5} {cnt}
+  {
+    #echo {{$window[$cnt]} {-$cnt}}
+  };
+
+  #ticker {paint group bar}
+  {
+   #var {member[1]} { Empty group! };
+   #var {member[2]} {};
+   #var {member[3]} {};
+   #var {member[4]} {};
+   #var {member[5]} {};
+   #foreach {$party[%*]} {party_member_name}
+   {
+   #list {party} {find} {$party_member_name} {index};
+   #format {member[$index]} {%s %s:%c %s %s}  {$partyCOL[$index]} {$party[$index]} {reset} {$partyTPA[$index]} {$separator};
+   }
+   #echo {{%s %s%s%s%s%s %s} { 2 } } {$topleft} {$member[1]} {$member[2]} {$member[3]} {$member[4]} {$member[5]} {$topright};
+  }
+  {1};
+};
+
+#function {hide_group_bar}
+{
+  #split 6 1;
+
+  #nop #showme {$prompt_final}{1};
+  #loop {1} {5} {cnt}
+  {
+    #echo {{$window[$cnt]} {-$cnt}}
+  };
+  #untick {paint group bar};
+  #echo {{ } { 2 }};
+  newparty;
+};
+
+#alias {groupbar}
+{
+  #if {"%1" == "on"}
+  { @show_group_bar{} }
+  { @hide_group_bar{} };
+
+};
+
+#function {in_party}
+{
+  #var {already_in_party} {false};
+  #foreach {$party[%*]} {party_member_name}
+  {
+    #if {"$party_member_name" == "%1"} { #var {already_in_party} {true}}
+  }
+  #return $already_in_party
+}
+
+#nop ---------------------------------------------------------------------------
+#nop PARTYADD - ADD MEMBER WITH partyadd <firstname>
+#nop ---------------------------------------------------------------------------
+
+#alias {partyadd}
+{
+  #format {to_add} {%p} {%1};
+
+  #if {"@in_party{$to_add}" == "false"}
+  {
+    #list {party} {add} {$to_add};
+    #list {party} {size} {partysize};
+    #list {partyCOL} {add} {<070>};
+    #list {partyTPA} {add} {down!};
+    #list {partyKILLS} {add} {0};
+  };
+
+};
+#nop ---------------------------------------------------------------------------
+#nop PARTYREMOVE - REMOVE MEMBER WITH partyremove charname
+#nop ---------------------------------------------------------------------------
+
+#alias {partyremove}
+{
+  #format {to_remove} {%p} {%1};
+  #list {party} {find} {$to_remove} {index};
+  #list {party} {delete} {$index};
+  #list {partyCOL} {delete} {$index};
+  #list {partyTPA} {delete} {$index};
+  #list {partyKILLS} {delete} {$index};
+}
+
+#nop ---------------------------------------------------------------------------
+#nop ? TITLE TO COME
+#nop ---------------------------------------------------------------------------
+
+#act {^A dull red glow appears around %1.}
+{
+  partycolour <019> %1;
+};
+
+#act {^The dull red glow around %1 becomes bright red.}
+{
+  partycolour <071> %1;
+};
+
+#act {^The bright red glow around %1 becomes wobbling orange.}
+{
+  partycolour <039> %1;
+};
+
+#act {^The wobbling orange glow around %1 becomes flickering yellow.}
+{
+  partycolour <003> %1;
+};
+
+#act {^The flickering yellow glow around %1 becomes wobbling orange.}
+{
+  partycolour <039> %1;
+};
+
+#act {^The wobbling orange glow around %1 becomes bright red.}
+{
+  partycolour <071> %1;
+};
+
+#act {^The bright red glow around %1 becomes dull red.}
+{
+  partycolour <019> %1;
+};
+
+#act {^The dull red glow around %1 disappears.}
+{
+  partycolour <029> %1;
+};
+
+#alias {partycolour}
+{
+#regexp {%2 %3 %4} {%i$party[1]}
+  {
+#list {partyCOL} {set} {1}  {%1}
+  };
+#regexp {%2 %3 %4} {%i$party[2]}
+  {
+#list {partyCOL} {set} {2}  {%1}
+  };
+#regexp {%2 %3 %4} {%i$party[3]}
+  {
+#list {partyCOL} {set} {3}  {%1}
+  };
+#regexp {%2 %3 %4} {%i$party[4]}
+  {
+#list {partyCOL} {set} {4}  {%1}
+  };
+#regexp {%2 %3 %4} {%i$party[5]}
+  {
+#list {partyCOL} {set} {5}  {%1}
+  };
+#regexp {%2 %3 %4} {skeleton}
+  {
+#var {skelcol} {%1};
+  };
+};
+
+
+
+
+
+#nop ---------------------------------------------------------------------------
+#nop NEWPARTY - CLEARS PARTYBAR
+#nop ---------------------------------------------------------------------------
+
+#alias {newparty}
+{
+#list party    clear;
+#list partyCOL clear;
+#list partyTPA clear;
+#var  partysize    0;
+
+#untick member1shield;
+#untick member2shield;
+#untick member3shield;
+#untick member4shield;
+#untick member5shield;
+
+#var member1kills 0;
+#var member2kills 0;
+#var member3kills 0;
+#var member4kills 0;
+#var member5kills 0;
+
+#var yourkills 0;
+};
+
+
+#nop ---------------------------------------------------------------------------
+#nop killtimer AND NPC RESPAWN TIMER
+#nop ---------------------------------------------------------------------------
+
+#act {%1 dealt the death blow to %2.$}
+{
+#regexp {%1} {%i$party[1]}
+  {
+#math {member1kills} {$member1kills + 1};
+  };
+#regexp {%1} {%i$party[2]}
+  {
+#math {member2kills} {$member2kills + 1};
+  };
+#regexp {%1} {%i$party[3]}
+  {
+#math {member3kills} {$member3kills + 1};
+  };
+#regexp {%1} {%i$party[4]}
+  {
+#math {member4kills} {$member4kills + 1};
+  };
+#regexp {%1} {%i$party[5]}
+  {
+#math {member5kills} {$member5kills + 1};
+  };
+
+  killtimer %2;
+};
+
+#alias {scry}
+{
+  ded;
+  cast ffm on %1;
+};
+
+#act {^You prepare to cast Floron's Fabulous Mirror on %1}
+{
+  killtimer_reset %1;
+};
+
+#act {^The crystal ring begins to glow as it searches for %1}
+{
+  killtimer_reset %1;
+};
+
+#act {^Cannot find "%1", no match.}
+{
+  killtimer_scry %1;
+};
+
+
+#alias {killtimer}
+{
+#regexp {%1 %2 %3} {%iboss}
+  {
+#var {bossded} {-20};
+#ticker {bossdeath} {#math {bossded} {$bossded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3} {%iHlakket}
+  {
+#var {hlakketded} {-20};
+#ticker {hlakketdeath} {#math {hlakketded} {$hlakketded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3 %4} {%ifemale captive}
+  {
+#var {captiveded} {0};
+#ticker {captivedeath} {#math {captiveded} {$captiveded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3} {%iceremonial}
+  {
+#var {ceremonialded} {-20};
+#ticker {ceremonialdeath} {#math {ceremonialded} {$ceremonialded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3} {%idopey looking}
+  {
+#var {shakerded} {-28};
+#ticker {shakerdeath} {#math {shakerded} {$shakerded + 1}} {60};
+  };
+
+
+#regexp {%1 %2 %3} {%iDelbert}
+  {
+#var {Delbertded} {0};
+#ticker {Delbertdeath} {#math {delbertded} {$delbertded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3} {%igrflx workleader}
+  {
+#var {grflxded} {0};
+#ticker {grflxdeath} {#math {grflxded} {$grflxded + 1}}{60};
+  };
+
+};
+
+
+#alias {killtimer_reset}
+{
+#regexp {%1 %2 %3 %4} {%iboss}
+  {
+#var {bossded} {-1};
+#unticker {bossdeath} {#math {bossded} {$bossded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3} {%iHlakket}
+  {
+#var {hlakketded} {-1};
+#unticker {hlakketdeath} {#math {hlakketded} {$hlakketded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3 %4} {%i female captive}
+  {
+#var {captiveded} {-1};
+#unticker {captivedeath} {#math {captiveded} {$captiveded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3 %4} {ceremonial}
+  {
+#var {ceremonialded} {-1};
+#unticker {ceremonialdeath} {#math {ceremonialded} {$ceremonialded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3 %4} {%idopey looking}
+  {
+#var {shakerded} {-1};
+#unticker {shakerdeath} {#math {shakerded} {$shakerded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3} {%iDelbert}
+  {
+#var {Delbertded} {-1};
+#unticker {Delbertdeath} {#math {delbertded} {$delbertded + 1}} {60};
+  };
+
+#regexp {%1 %2 %3} {%igrflx workleader}
+  {
+#var {grflxded} {-1};
+#unticker {grflxdeath} {#math {grflxded} {$grflxded + 1}}{60};
+  };
+
+
+};
+
+
+
+#alias {killtimer_scry}
+{
+#regexp {%1 %2 %3} {%iboss}
+  {
+#if {$bossded == -1}
+    {
+#var {bossded} {0};
+#ticker {bossdeath} {#math {bossded} {$bossded + 1}} {60};
+    };
+  };
+
+#regexp {%1 %2 %3} {%iHlakket}
+  {
+#if {$hlakketded == -1}
+    {
+#var {hlakketded} {0};
+#ticker {hlakketdeath} {#math {hlakketded} {$hlakketded + 1}} {60};
+    };
+  };
+
+#regexp {%1 %2 %3 %4} {%icaptive}
+  {
+#if {$captiveded == -1}
+    {
+#var {captiveded} {0};
+#ticker {captivedeath} {#math {captiveded} {$captiveded + 1}} {60};
+    };
+  };
+
+#regexp {%1 %2 %3} {%iDelbert}
+  {
+#if {$delbertded == -1}
+    {
+#var {delbertded} {0};
+#ticker {delbertdeath} {#math {delbertded} {$delbertded + 1}} {60};
+    };
+  };
+
+
+};
+
+
+#alias {gded}
+{
+  gs Hlakket: $hlakketded Boss: $bossded Captive: $captiveded Delbert: $delbertded cGuards: $ceremonialded Shaker: $shakerded Workleader: $grflxded;
+};
+
+#alias {ded}
+{
+#showme Hlakket: $hlakketded Boss: $bossded Captive: $captiveded Delbert: $delbertded cGuards: $ceremonialded Shaker: $shakerded Workleader: $grflxded;
+};
+
+
+#act {^You killed the %1}
+{
+#math {yourkills} {$yourkills + 1};
+
+  killtimer %1;
+};
+
+#alias {kills}
+{
+#switch {$partysize}
+  {
+#case {1}
+    {
+#showme {<070>Kills: <150>You: <050>$yourkills <150>$party[1]: <050>$member1kills};
+    };
+#case {2}
+    {
+#showme {<070>Kills: <150>You:<050> $yourkills <150>$party[1]: <050>$member1kills  <150>$party[2]: <050>$member2kills};
+    };
+
+#case {3}
+    {
+#showme {<070>Kills: <150>You: <050>$yourkills <150>$party[1]:<050> $member1kills  <150>$party[2]: <050>$member2kills  <150>$party[3]: <050>$member3kills };
+    };
+
+#case {4}
+    {
+#showme {<070>Kills: <150>You: <050>$yourkills <150>$party[1]: <050>$member1kills  <150>$party[2]: <050>$member2kills  <150>$party[3]: <050>$member3kills  <150>$party[4]: <050>$member4kills};
+    };
+
+#case {5}
+    {
+#showme {<070>Kills: <150>You: <050>$yourkills <150>$party[1]: <050>$member1kills <150> $party[2]: <050>$member2kills  <150>$party[3]: <050>$member3kills  <150>$party[4]: <050>$member4kills  <150>$party[5]: <050>$member5kills};
+    };
+
+#case {0}
+    {
+#showme {<070>Kills: <150>You: <050>$yourkills};
+    };
+  };
+};
+
+
+#alias {gkills}
+{
+#switch {$partysize}
+  {
+#case {1}
+    {
+      gs Kills: $playername: $yourkills  $party[1]: $member1kills;
+    };
+#case {2}
+    {
+      gs Kills: $playername: $yourkills  $party[1]: $member1kills  $party[2]: $member2kills;
+    };
+
+#case {3}
+    {
+      gs Kills: $playername: $yourkills  $party[1]: $member1kills  $party[2]: $member2kills  $party[3]: $member3kills;
+    };
+
+#case {4}
+    {
+      gs Kills: $playername: $yourkills  $party[1]: $member1kills   $party[2]: $member2kills  $party[3]: $member3kills  $party[4]: $member4kills;
+    };
+
+#case {5}
+    {
+      gs Kills: $playername: $yourkills $party[1]: $member1kills  $party[2]: $member2kills  $party[3]: $member3kills  $party[4]: $member4kills  $party[5]: $member5kills;
+    };
+
+#case {0}
+    {
+#showme {<070>Kills: <150>You: <050>$yourkills};
+    };
+  };
+};
+
+#alias {killreset}
+{
+#var member1kills 0;
+#var member2kills 0;
+#var member3kills 0;
+#var member4kills 0;
+#var member5kills 0;
+#var yourkills 0;
+  kills;
+};
+
+
+
+
