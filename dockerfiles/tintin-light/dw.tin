@@ -1,1 +1,8 @@
+#read aliases.tin
+#read triggers.tin
+#nop read window-bar.tin
+#read automapper.tin
+#read highlights.tin
+#read defense.tin
+#read promptbar.tin
 #session discworld discworld.atuin.net 4242

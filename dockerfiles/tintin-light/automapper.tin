@@ -1,0 +1,91 @@
+#format IAC  %a 255
+#format DONT %a 254
+#format DO   %a 253
+#format WONT %a 252
+#format WILL %a 251
+#format SB   %a 250
+#format SE   %a 240
+
+#format MSDP %a  69
+
+#format VAR  %a  01
+#format VAL  %a  02
+
+#event {SESSION CONNECTED}
+{
+	#split 16 1;
+	#map create 50000;
+	#map flag nofollow;
+	#map flag vtmap;
+	#map flag static;
+	#map read msdp.map
+}
+
+#event {SESSION DISCONNECTED}
+{
+	#map write msdp.map
+}
+
+#var MSDP_REPORTABLE_VARIABLES {{ROOM}{1}}
+
+#nop Turn debug telnet on to see telnet events.
+
+#config {debug telnet} {off}
+
+#event {IAC WILL MSDP}
+{
+        #send {$IAC$DO$MSDP\};
+
+	msdp_report
+}
+
+#event {IAC SB MSDP}
+{
+	#var {MSDP_%0} {%1}
+}
+
+#event {IAC SB MSDP ROOM}
+{
+	#var {MSDP_ROOM} {%1};
+
+	#map goto {$MSDP_ROOM[VNUM]} {dig};
+
+	#map set roomarea $MSDP_ROOM[AREA];
+	#map set roomname $MSDP_ROOM[NAME];
+	#map set roomterrain $MSDP_ROOM[TERRAIN];
+	#map set roomcolor <178>;
+
+	#nop Create unmapped exits and color unexplored rooms red.;
+
+	#foreach {$MSDP_ROOM[EXITS][]} {EXIT}
+	{
+		#map get {roomexit} {EXIT_LIST};
+
+		#if {&EXIT_LIST[$EXIT] == 0}
+		{
+			#map get {roomvnum} {EXIT_VNUM} {$MSDP_ROOM[EXITS][$EXIT]};
+
+			#map dig {$EXIT} {$MSDP_ROOM[EXITS][$EXIT]};
+
+			#if {$EXIT_VNUM == 0}
+			{
+				#map set {roomcolor} {<118>} {$MSDP_ROOM[EXITS][$EXIT]}
+			}
+		}
+	}
+}
+
+#nop Ask the server to report all keys inside MSDP_REPORTABLE_VARIABLES
+
+#alias {msdp_report}
+{
+        #var result {$IAC$SB$MSDP${VAR}REPORT};
+
+        #foreach {$MSDP_REPORTABLE_VARIABLES[]} {tmp}
+        {
+                #var result {$result${VAL}$tmp}
+        };
+
+        #send {$result$IAC$SE\}
+}
+

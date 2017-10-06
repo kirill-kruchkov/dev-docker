@@ -49,8 +49,7 @@ WORKDIR /home/void
 
 # Copy Discworld config
 
-COPY ./dockerfiles/tintin-light/dw.tin ./dw.tin
-
+COPY ./dockerfiles/tintin-light/*.tin ./
 
 # Setup TinTin
 RUN mkdir tintin \

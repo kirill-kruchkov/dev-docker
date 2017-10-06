@@ -1,0 +1,35 @@
+#nop This script is written for v1.99.7 and higher
+
+#split 6 1
+
+#var window {{1}{ } {2}{ } {3}{ } {4}{ } {5}{ }}
+
+#act {~%1 tells you '%2} {showtowin %1 tells you '%2}
+#act {~%1 chats '%2} {showtowin %1 chats '%2}
+
+#alias {showtowin}
+{
+	#format temp {%w} {%0};
+
+	#loop {1} {&temp[]} {cnt}
+	{
+		#list window ins -1 {$temp[$cnt]}
+	};
+
+	#loop {6} {&window[]} {cnt}
+	{
+		#list window del 1
+	};
+
+	#loop {1} {5} {cnt}
+	{
+		#echo {{$window[$cnt]} {-$cnt}}
+	}
+}
+
+#alias {test}
+{
+	#showme <138>Bubba tells you 'hello';
+	#showme <158>Pamela chats 'bye'
+}
+
