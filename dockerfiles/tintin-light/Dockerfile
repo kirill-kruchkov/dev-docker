@@ -36,7 +36,8 @@ WORKDIR /home/void
 # Setup TinTin
 RUN mkdir tintin \
   && cd tintin \
-  && sudo apt-get --yes --quiet --no-install-recommends build-dep tintin++ \
+  && sudo apt-get --yes --quiet --no-install-recommends --fix-missing \
+    build-dep tintin++ \
   && wget http://downloads.sourceforge.net/tintin/tintin-2.01.1.tar.gz \
   && tar -zxvf tintin-2.01.1.tar.gz \
   && cd ./tt/src \
@@ -44,6 +45,7 @@ RUN mkdir tintin \
   && make \
   && sudo make install
 
+COPY ./dockerfiles/tintin-light/dw.tin ./dw.tin
 
 # GO!
 
