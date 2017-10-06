@@ -30,7 +30,7 @@ RUN apt-get install --yes --quiet --no-install-recommends git aria2 ca-certifica
 # Install PACKAGES
 
 RUN apt-fast install --yes --quiet --no-install-recommends --fix-missing \
-	sudo man less \
+	sudo man less vim \
 	build-essential cmake libssl-dev \
   apt-transport-https \
 	curl wget
