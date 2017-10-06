@@ -39,7 +39,7 @@ RUN apt-fast install --yes --quiet --no-install-recommends --fix-missing \
 
 # Setup USER
 
-RUN useradd --create-home --groups 'sudo' --shell '/bin/zsh' void \
+RUN useradd --create-home --groups 'sudo' --shell '/bin/sh' void \
 	&& echo 'void ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER void
 ENV USER=void \
@@ -68,4 +68,4 @@ RUN mkdir tintin \
 
 # GO!
 
-ENTRYPOINT ["/bin/sh"]
+ENTRYPOINT /usr/local/bin/tt++ dw.tin && /bin/sh
