@@ -32,7 +32,7 @@ RUN apt-get install --yes --quiet --no-install-recommends git aria2 ca-certifica
 RUN apt-fast install --yes --quiet --no-install-recommends --fix-missing \
 	sudo man less vim \
 	build-essential cmake libssl-dev \
-  apt-transport-https \
+    apt-transport-https \
 	curl wget
 
 # Setup USER
@@ -47,13 +47,23 @@ ENV USER=void \
 	TERM=xterm-256color
 WORKDIR /home/void
 
-# Copy Discworld config
 
-COPY ./dockerfiles/tintin-light/*.tin ./
+# Copy startup script
+COPY ./dockerfiles/tintin-light/startup.sh ./
+
+
+# Create tintin dir
+
+RUN mkdir tintin
+
+
+# Fetch Discworld config
+RUN cd tintin \
+  && git clone https://github.com/kirill-kruchkov/dw-mud.git ./
+
 
 # Setup TinTin
-RUN mkdir tintin \
-  && cd tintin \
+RUN cd tintin \
   && sudo apt-fast --yes --quiet --no-install-recommends --fix-missing \
     build-dep tintin++ \
   && wget http://downloads.sourceforge.net/tintin/tintin-2.01.1.tar.gz \
@@ -68,4 +78,4 @@ RUN mkdir tintin \
 
 EXPOSE 4242
 
-ENTRYPOINT /usr/local/bin/tt++ dw.tin && /bin/sh
+ENTRYPOINT startup.sh
