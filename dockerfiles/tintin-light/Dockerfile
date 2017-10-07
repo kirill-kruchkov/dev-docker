@@ -58,12 +58,11 @@ RUN mkdir tintin
 
 
 # Fetch Discworld config
-RUN cd tintin \
-  && git clone https://github.com/kirill-kruchkov/dw-mud.git ./
+RUN git clone https://github.com/kirill-kruchkov/dw-mud.git ./tintin
 
 
 # Setup TinTin
-RUN cd tintin \
+RUN cd ./tintin \
   && sudo apt-fast --yes --quiet --no-install-recommends --fix-missing \
     build-dep tintin++ \
   && wget http://downloads.sourceforge.net/tintin/tintin-2.01.1.tar.gz \
@@ -78,4 +77,4 @@ RUN cd tintin \
 
 EXPOSE 4242
 
-ENTRYPOINT startup.sh
+ENTRYPOINT ["/home/void/startup.sh"]

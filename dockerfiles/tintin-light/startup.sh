@@ -1,3 +1,6 @@
-echo "#var playername $1" | cat - config.tin > temp && mv temp config.tin \
+#!/bin/sh
+echo "Player Name $1" \
+  && cd ./tintin \
+  && echo "#var playername $1" | cat - config.tin > temp && mv temp config.tin \
   && /usr/local/bin/tt++ config.tin \
   && /bin/sh
