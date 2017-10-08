@@ -1,7 +1,6 @@
 FROM ubuntu:latest
 
 
-
 # UPKEEPING
 
 RUN echo "deb-src http://gb.archive.ubuntu.com/ubuntu/ xenial main restricted" >> /etc/apt/sources.list \
@@ -26,7 +25,6 @@ RUN apt-get install --yes --quiet --no-install-recommends git aria2 ca-certifica
 	&& cp /tmp/apt-fast/apt-fast.conf /etc
 
 
-
 # Install PACKAGES
 
 RUN apt-fast install --yes --quiet --no-install-recommends --fix-missing \
@@ -34,6 +32,7 @@ RUN apt-fast install --yes --quiet --no-install-recommends --fix-missing \
 	build-essential cmake libssl-dev \
     apt-transport-https \
 	curl wget
+
 
 # Setup USER
 
