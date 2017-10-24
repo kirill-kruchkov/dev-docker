@@ -38,7 +38,11 @@ Plugin 'terryma/vim-multiple-cursors'   " Multiple cursorn on Ctrl+n (skip via C
 Plugin 'SirVer/ultisnips'               " Snippets engine
 Plugin 'honza/vim-snippets'             " Snippets
 Plugin 'elmcast/elm-vim'                " Elm support
-
+Plugin 'ternjs/tern_for_vim'            " Tern for Vim
+Plugin 'AlessandroYorba/Sierra'         " Sierra color theme
+Plugin 'flazz/vim-colorschemes'
+Plugin 'scrooloose/nerdcommenter'       " Orgasmic comments
+Plugin 'digitaltoad/vim-pug'            " Support for Pug (formerly Jade) files
 
 call vundle#end()                       " required
 filetype plugin indent on               " required
@@ -50,7 +54,6 @@ filetype plugin indent on               " required
 " Essentials {{{
 
 set hidden                          " allow unsaved buffers
-set shortmess+=c                    " fix YouCompleteMe annoying message
 set timeoutlen=250                  " tune shortcut timeout
 set t_ut=                           " prevent backgound glitches in TMUX
 
@@ -62,17 +65,31 @@ set t_ut=                           " prevent backgound glitches in TMUX
 
 let g:TerminusFocusReporting=0
 let g:TerminusAssumeITerm=1
-let g:TerminusMouse=0
+let g:TerminusMouse=1
 let g:TerminusInsertCursorShape=1
 
 " }}}
 
 
 
-" Colors and UI {{{
+" Nerd Commenter {{{
 
+let g:NERDSpaceDelims=1
+let g:NERDCompactSexyComs=1
+let g:NERDDefaultAlign='left'
+let g:NERDCommentEmptyLines=1
+let g:NERDTrimTrailingWhitespace=1
+
+" }}}
+
+
+
+" Colors and UI {{{
 set termguicolors                   " enable true color
-silent! colorscheme vice         " theme (silent because plugins might not be installed)
+silent! colorscheme tomorrow-night-bright " theme (silent because plugins might not be installed)
+let s:background = ""
+hi! Normal ctermbg=NONE guibg=NONE
+hi! NonText ctermbg=NONE guibg=NONE
 let g:airline_powerline_fonts=1     " use powerline fonts in status line (Airline)
 let g:airline_skip_empty_sections=1 " do not show empty sections in Airline
 set statusline=2                    " show custom statusline (Airline)
@@ -94,6 +111,9 @@ execute "set colorcolumn=" . join(range(81,335), ',')
 " autocomplete menu colors (not covered in dracula theme)
 highlight Pmenu ctermfg=NONE ctermbg=236 cterm=NONE guifg=NONE guibg=#64666d
 highlight PmenuSel ctermfg=NONE ctermbg=24 cterm=NONE guifg=NONE guibg=#204a87
+
+set textwidth=120
+set colorcolumn=+1
 
 " }}}
 
@@ -144,6 +164,11 @@ nmap <leader>+ <Plug>AirlineSelectNextTab
 
 " Keymap and Keyboard Layout Switching {{{
 
+" Allow VIM shortcuts while working in Russian
+" See: https://habrahabr.ru/post/98393/
+" TODO: https://github.com/lyokha/vim-xkbswitch
+
+"set keymap=russian-jcukenmac        " use custom keymap (Ctrl + 6 or Ctrl + ^ to switch)
 set iminsert=0
 set imsearch=0
 
@@ -157,6 +182,8 @@ set expandtab                       " tabs to spaces
 set tabstop=2                       " spaces per tab
 set softtabstop=2                   " same for editing
 set shiftwidth=2                    " same for identing (...doh!)
+set smarttab
+set expandtab
 set nowrap                          " don't wrap lines
 set linebreak                       " wrap lines at convenient points
 set autoindent                      " automatically set ident of a new line
@@ -250,6 +277,7 @@ let NERDTreeMouseMode=2            " toggle dirs vith single click
 nmap <Leader>n :let NERDTreeQuitOnOpen=0<bar>NERDTreeToggle<CR>
 " open and reveal file (and close on file select)
 nmap <Leader>o :let NERDTreeQuitOnOpen=1<bar>:e .<CR>
+nmap <Leader>r :NERDTreeFind<CR>
 " quit on q
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
@@ -264,6 +292,9 @@ if executable("ag")
 endif
 let g:CtrlSpaceSearchTiming = 200
 let g:airline_exclude_preview = 1
+let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
+let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
+let g:CtrlSpaceSaveWorkspaceOnExit = 1
 nnoremap <silent><Tab> :CtrlSpace<CR>
 nnoremap <silent><Leader>p :CtrlSpace O<CR>
 
@@ -287,9 +318,11 @@ set shortmess+=c                    " disable annoying auotocompletion messages
 let g:ycm_complete_in_comments=1    " completion in comments
 let g:ycm_min_num_of_chars_for_completion=1
 let g:ycm_semantic_triggers = {
-     \ 'elm' : ['.'],
-     \}
-
+    \ 'elm' : ['.'],
+    \}
+nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
 " }}}
 
 
@@ -333,7 +366,7 @@ let g:UltiSnipsEditSplit='vertical'
 
 " Markown and alike (Pencil plugin) {{{
 
-let g:pencil#textwidth = 80
+let g:pencil#textwidth = 120
 augroup pencil
   autocmd!
   autocmd FileType markdown,mkd,text call pencil#init({'wrap': 'hard'})
@@ -389,6 +422,14 @@ iabbrev retrun return
 
 
 
+" Fix arrow keys behavior in vim in tmux in docker in iTerm
+map <Esc>[A <Up>
+map <Esc>[B <Down>
+map <Esc>[C <Right>
+map <Esc>[D <Left>
+
+
+
 " Autoreload vimrc {{{
 
 augroup reload_vimrc " {
@@ -398,8 +439,14 @@ augroup END " }
 
 " }}}
 
-" Fix arrow keys behavior in vim in tmux in docker in iTerm
-map <Esc>[A <Up>
-map <Esc>[B <Down>
-map <Esc>[C <Right>
-map <Esc>[D <Left>
+
+" TODO: перейти на Plug и lazy плагины:
+"   https://jordaneldredge.com/blog/why-i-switched-from-vundle-to-plug/
+" TODO: http://javascriptplayground.com/blog/2017/01/vim-for-javascript/
+" TODO: https://github.com/xolox/vim-notes или https://github.com/vimwiki/vimwiki
+" TODO: настроить https://github.com/edkolev/tmuxline.vim
+" TODO: настроить, что бы скролл мышкой оставлял курсор на месте, даже когда тот уходит с видимого экрана
+" TODO: Подумать про http://vim.wikia.com/wiki/Quick_command_in_insert_mode
+" TODO: Настроить перемещение строк https://dockyard.com/blog/2013/09/26/vim-moving-lines-aint-hard
+"  скорее всего по ctrl + alt + стрелка
+

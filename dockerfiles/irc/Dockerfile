@@ -2,6 +2,10 @@ FROM ubuntu:latest
 
 # UPKEEPING
 
+RUN echo "deb http://deb.torproject.org/torproject.org xenial main" >> /etc/apt/sources.list \
+  && echo "deb-src http://deb.torproject.org/torproject.org xenial main" >> /etc/apt/sources.list
+
+
 RUN apt-get update \
 	&& apt-get --yes upgrade \
 	&& echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
@@ -24,7 +28,7 @@ RUN apt-get install --yes --quiet --no-install-recommends git aria2 ca-certifica
 # Install PACKAGES
 
 RUN apt-fast install --yes --quiet --no-install-recommends \
-	sudo man less zsh ca-certificates xclip \
+	sudo man less zsh ca-certificates \
 	build-essential cmake libssl-dev \
 	curl wget \
 	git tig silversearcher-ag \
@@ -33,6 +37,7 @@ RUN apt-fast install --yes --quiet --no-install-recommends \
   weechat
 
 RUN apt-fast install --yes --quiet --no-install-recommends vim
+
 
 # Setup USER
 
@@ -54,15 +59,6 @@ COPY dotfiles/zsh/.zshrc .zshrc
 RUN sudo chown $USER .zshrc \
 	&& touch .zsh_custom \
 	&& /bin/zsh -c 'source .zshrc'
-
-
-
-COPY dotfiles/sources.list /etc/apt/sources.list.d
-RUN sudo apt-get update \
-	&& sudo apt-get --yes upgrade \
-    && gpg --keyserver keys.gnupg.net --recv A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 \
-    && gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add - \
-    && sudo apt-fast install --yes --quiet --allow-unauthenticated --no-install-recommends tor deb.torproject.org-keyring
 
 
 # GO!
