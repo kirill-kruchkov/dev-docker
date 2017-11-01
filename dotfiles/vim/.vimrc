@@ -189,7 +189,7 @@ set linebreak                       " wrap lines at convenient points
 set autoindent                      " automatically set ident of a new line
 set backspace=indent,eol,start      " what is backspase
 set list listchars=tab:\ \ ,trail:· " show whitespace at eol
-autocmd BufWritePre * :%s/\s\+$//e  " remove whitespace at eol on save
+autocmd FileType c,cpp,java,php,javascript,js,css,scss autocmd BufWritePre <buffer> :%s/\s\+$//e  " remove whitespace at eol on save
 
 " }}}
 
@@ -306,7 +306,7 @@ nnoremap <silent><Leader>p :CtrlSpace O<CR>
 " EditorConfig {{{
 
 " Play nice with Fugitive
-let g:EditorConfig_exclude_patterns = ['fugitive://.*']
+let g:EditorConfig_exclude_patterns = ['fugitive://.*', '*.jade']
 
 " }}}
 
