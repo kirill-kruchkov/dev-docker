@@ -335,6 +335,16 @@ let g:flow#enable = 0               " let Ale do the checking
 
 
 
+" Ale {{{
+
+let g:ale_fixers = {}
+let g:ale_fixers['javascript'] = ['prettier']
+let g:ale_javascript_prettier_use_local_config = 1
+
+" }}}
+
+
+
 " Vim-Javascript {{{
 
 let g:javascript_plugin_jsdoc=1
