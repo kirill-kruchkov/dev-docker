@@ -15,7 +15,7 @@ Plugin 'vim-airline/vim-airline'        " Status line and text
 Plugin 'vim-airline/vim-airline-themes' " Status line themes
 Plugin 'edkolev/tmuxline.vim'           " Sync TMUX theme with airline
 Plugin 'CursorLineCurrentWindow'        " Hide cursor line in inactive splits
-Plugin 'osyo-manga/vim-brightest'       " Highlight word under cursor
+" Plugin 'osyo-manga/vim-brightest'       " Highlight word under cursor
 Plugin 'scrooloose/nerdtree'            " NERDTree (Navigation bar)
 Plugin 'Xuyuanp/nerdtree-git-plugin'    " NERDTree git integration
 Plugin 'sjl/gundo.vim'                  " GUndo (Undo tree)
@@ -97,8 +97,8 @@ set laststatus=2                    " show custom statusline (Airline) with no s
 set noshowmode                      " disable default mode indication
 syntax enable                       " syntax highlignting
 set number                          " show line numbers
-set relativenumber                  " make linenumbers relative to cursor (experimental)
-set cursorline                      " highlight current line
+" set relativenumber                  " make linenumbers relative to cursor (experimental)
+" set cursorline                      " highlight current line
 set wildmenu                        " visual autocomplete for command menu
 set visualbell                      " visual bell instead of beeping
 set showcmd                         " show command in bottom bar
@@ -135,7 +135,6 @@ set splitbelow
 set splitright
 
 " }}}
-
 
 
 " Tabs navigation (via Airline) {{{
