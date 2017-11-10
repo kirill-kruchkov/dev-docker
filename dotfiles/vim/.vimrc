@@ -43,6 +43,7 @@ Plugin 'AlessandroYorba/Sierra'         " Sierra color theme
 Plugin 'flazz/vim-colorschemes'
 Plugin 'scrooloose/nerdcommenter'       " Orgasmic comments
 Plugin 'digitaltoad/vim-pug'            " Support for Pug (formerly Jade) files
+Plugin 'ashisha/image.vim'              " Support image preview (needs `pip install Pillow`)
 
 call vundle#end()                       " required
 filetype plugin indent on               " required
