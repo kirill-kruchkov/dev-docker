@@ -340,7 +340,7 @@ let g:flow#enable = 0               " let Ale do the checking
 let g:ale_fixers = {}
 let g:ale_fixers['javascript'] = ['prettier']
 let g:ale_javascript_prettier_use_local_config = 1
-nnoremap <leader>ff :ALEFix<CR>
+nnoremap <leader>cf :ALEFix<CR>
 
 " }}}
 
@@ -455,7 +455,9 @@ endif
 
 " bind \ (backward slash) to grep shortcut
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-nnoremap \ :Ag<SPACE>
+nnoremap <leader>f :Ag<SPACE>
+
+
 
 " Autoreload vimrc {{{
 
