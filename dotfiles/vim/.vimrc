@@ -28,6 +28,7 @@ Plugin 'flowtype/vim-flow'              " Flow-type autocomplete
 Plugin 'cohama/lexima.vim'              " Autoclose parens, quotes etc
 Plugin 'tpope/vim-surround'             " Add s object (for manipulating parens, quotes etc)
 Plugin 'pangloss/vim-javascript'        " Better Javascript and Babel support
+Plugin 'jelera/vim-javascript-syntax'   " VIM Javascript syntax with ES2015 template strings support
 Plugin 'mxw/vim-jsx'                    " JSX support
 Plugin 'elzr/vim-json'                  " JSON support
 Plugin 'w0rp/ale'                       " Async linter for vim 8 (https://github.com/w0rp/ale)
@@ -44,6 +45,11 @@ Plugin 'flazz/vim-colorschemes'
 Plugin 'scrooloose/nerdcommenter'       " Orgasmic comments
 Plugin 'digitaltoad/vim-pug'            " Support for Pug (formerly Jade) files
 Plugin 'ashisha/image.vim'              " Support image preview (needs `pip install Pillow`)
+Plugin 'slashmili/alchemist.vim'        " Support for Elixir
+Plugin 'elixir-editors/vim-elixir'      " Elixir syntax highlight
+Plugin 'carlosgaldino/elixir-snippets'  " Elixir snippets
+Plugin 'skammer/vim-css-color'          " Show hexadecimal color for CSS codes
+
 
 call vundle#end()                       " required
 filetype plugin indent on               " required
@@ -118,6 +124,11 @@ set colorcolumn=+1
 
 " }}}
 
+
+" Highlight ES6 template strings
+hi link javaScriptTemplateDelim String
+hi link javaScriptTemplateVar Text
+hi link javaScriptTemplateString String
 
 
 " Movement {{{
@@ -454,7 +465,7 @@ if executable('ag')
 endif
 
 " bind \ (backward slash) to grep shortcut
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap <leader>f :Ag<SPACE>
 
 
