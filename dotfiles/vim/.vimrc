@@ -15,7 +15,7 @@ Plugin 'vim-airline/vim-airline'        " Status line and text
 Plugin 'vim-airline/vim-airline-themes' " Status line themes
 Plugin 'edkolev/tmuxline.vim'           " Sync TMUX theme with airline
 Plugin 'CursorLineCurrentWindow'        " Hide cursor line in inactive splits
-" Plugin 'osyo-manga/vim-brightest'       " Highlight word under cursor
+" Plugin 'osyo-manga/vim-brightest'       " Highlight word under cursor — makes my VIM too slow :(
 Plugin 'scrooloose/nerdtree'            " NERDTree (Navigation bar)
 Plugin 'Xuyuanp/nerdtree-git-plugin'    " NERDTree git integration
 Plugin 'sjl/gundo.vim'                  " GUndo (Undo tree)
@@ -32,7 +32,8 @@ Plugin 'jelera/vim-javascript-syntax'   " VIM Javascript syntax with ES2015 temp
 Plugin 'mxw/vim-jsx'                    " JSX support
 Plugin 'elzr/vim-json'                  " JSON support
 Plugin 'w0rp/ale'                       " Async linter for vim 8 (https://github.com/w0rp/ale)
-Plugin 'tpope/vim-markdown'             " Markdown syntax
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
 Plugin 'mattly/vim-markdown-enhancements' " MultiMarkdown and CriticMarkup extensions
 Plugin 'reedes/vim-pencil'              " Working with prose-oriented filetypes (wrapping, formatting etc)
 Plugin 'terryma/vim-multiple-cursors'   " Multiple cursorn on Ctrl+n (skip via Ctrl+x)
@@ -67,6 +68,13 @@ set t_ut=                           " prevent backgound glitches in TMUX
 " }}}
 
 
+" Markdown {{{
+
+let g:vim_markdown_conceal = 0
+
+" }}}
+
+
 
 " Terminus {{{
 
@@ -93,7 +101,7 @@ let g:NERDTrimTrailingWhitespace=1
 
 " Colors and UI {{{
 set termguicolors                   " enable true color
-silent! colorscheme tomorrow-night-bright " theme (silent because plugins might not be installed)
+silent! colorscheme vice " theme (silent because plugins might not be installed)
 let s:background = ""
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE
@@ -301,14 +309,15 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 if executable("ag")
     let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
 endif
-let g:CtrlSpaceSearchTiming = 200
+let g:CtrlSpaceSearchTiming = 500
 let g:airline_exclude_preview = 1
 let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
 let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
 let g:CtrlSpaceSaveWorkspaceOnExit = 1
+let g:CtrlSpaceIgnoredFiles = '\(ios\|android\)[\/]'
+
 nnoremap <silent><Tab> :CtrlSpace<CR>
 nnoremap <silent><Leader>p :CtrlSpace O<CR>
-
 
 "}}}
 
@@ -450,19 +459,6 @@ map <Esc>[B <Down>
 map <Esc>[C <Right>
 map <Esc>[D <Left>
 
-
-
-" The Silver Searcher
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
 
 " bind \ (backward slash) to grep shortcut
 command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
