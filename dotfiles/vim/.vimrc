@@ -15,7 +15,6 @@ Plugin 'vim-airline/vim-airline'        " Status line and text
 Plugin 'vim-airline/vim-airline-themes' " Status line themes
 Plugin 'edkolev/tmuxline.vim'           " Sync TMUX theme with airline
 Plugin 'CursorLineCurrentWindow'        " Hide cursor line in inactive splits
-" Plugin 'osyo-manga/vim-brightest'       " Highlight word under cursor — makes my VIM too slow :(
 Plugin 'scrooloose/nerdtree'            " NERDTree (Navigation bar)
 Plugin 'Xuyuanp/nerdtree-git-plugin'    " NERDTree git integration
 Plugin 'sjl/gundo.vim'                  " GUndo (Undo tree)
@@ -26,16 +25,8 @@ Plugin 'editorconfig/editorconfig-vim'	" EditorConfig
 Plugin 'valloric/youcompleteme'         " Autocomplete solution
 Plugin 'flowtype/vim-flow'              " Flow-type autocomplete
 Plugin 'cohama/lexima.vim'              " Autoclose parens, quotes etc
-Plugin 'tpope/vim-surround'             " Add s object (for manipulating parens, quotes etc)
-Plugin 'pangloss/vim-javascript'        " Better Javascript and Babel support
 Plugin 'jelera/vim-javascript-syntax'   " VIM Javascript syntax with ES2015 template strings support
-Plugin 'mxw/vim-jsx'                    " JSX support
-Plugin 'elzr/vim-json'                  " JSON support
 Plugin 'w0rp/ale'                       " Async linter for vim 8 (https://github.com/w0rp/ale)
-Plugin 'godlygeek/tabular'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'mattly/vim-markdown-enhancements' " MultiMarkdown and CriticMarkup extensions
-Plugin 'reedes/vim-pencil'              " Working with prose-oriented filetypes (wrapping, formatting etc)
 Plugin 'terryma/vim-multiple-cursors'   " Multiple cursorn on Ctrl+n (skip via Ctrl+x)
 Plugin 'SirVer/ultisnips'               " Snippets engine
 Plugin 'honza/vim-snippets'             " Snippets
@@ -44,13 +35,11 @@ Plugin 'ternjs/tern_for_vim'            " Tern for Vim
 Plugin 'AlessandroYorba/Sierra'         " Sierra color theme
 Plugin 'flazz/vim-colorschemes'
 Plugin 'scrooloose/nerdcommenter'       " Orgasmic comments
-Plugin 'digitaltoad/vim-pug'            " Support for Pug (formerly Jade) files
-Plugin 'ashisha/image.vim'              " Support image preview (needs `pip install Pillow`)
 Plugin 'slashmili/alchemist.vim'        " Support for Elixir
 Plugin 'elixir-editors/vim-elixir'      " Elixir syntax highlight
 Plugin 'carlosgaldino/elixir-snippets'  " Elixir snippets
-Plugin 'skammer/vim-css-color'          " Show hexadecimal color for CSS codes
-
+Plugin 'epmatsw/ag.vim'
+Plugin 'prettier/vim-prettier'
 
 call vundle#end()                       " required
 filetype plugin indent on               " required
@@ -101,7 +90,7 @@ let g:NERDTrimTrailingWhitespace=1
 
 " Colors and UI {{{
 set termguicolors                   " enable true color
-silent! colorscheme vice " theme (silent because plugins might not be installed)
+silent! colorscheme mustang " theme (silent because plugins might not be installed)
 let s:background = ""
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE
@@ -111,8 +100,6 @@ set statusline=2                    " show custom statusline (Airline)
 set laststatus=2                    " show custom statusline (Airline) with no splits
 set noshowmode                      " disable default mode indication
 syntax enable                       " syntax highlignting
-set number                          " show line numbers
-" set relativenumber                  " make linenumbers relative to cursor (experimental)
 " set cursorline                      " highlight current line
 set wildmenu                        " visual autocomplete for command menu
 set visualbell                      " visual bell instead of beeping
@@ -129,6 +116,18 @@ highlight PmenuSel ctermfg=NONE ctermbg=24 cterm=NONE guifg=NONE guibg=#204a87
 
 set textwidth=120
 set colorcolumn=+1
+
+set synmaxcol=128
+syntax sync minlines=256
+set lazyredraw
+
+:set number relativenumber
+
+:augroup numbertoggle
+:  autocmd!
+:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+:augroup END
 
 " }}}
 
@@ -202,7 +201,6 @@ set tabstop=2                       " spaces per tab
 set softtabstop=2                   " same for editing
 set shiftwidth=2                    " same for identing (...doh!)
 set smarttab
-set expandtab
 set nowrap                          " don't wrap lines
 set linebreak                       " wrap lines at convenient points
 set autoindent                      " automatically set ident of a new line
@@ -290,6 +288,8 @@ endif
 
 " NERDTree {{{
 
+let NERDTreeIgnore=['\~$', 'node_modules[[dir]]']
+
 let NERDTreeShowHidden=1           " show hidden files
 let NERDTreeMouseMode=2            " toggle dirs vith single click
 " open in sidebar
@@ -355,12 +355,19 @@ let g:flow#enable = 0               " let Ale do the checking
 
 
 
+" Prettier {{{
+
+nnoremap <leader>cf :Prettier<CR>
+
+" }}}
+
+
 " Ale {{{
 
-let g:ale_fixers = {}
-let g:ale_fixers['javascript'] = ['prettier']
-let g:ale_javascript_prettier_use_local_config = 1
-nnoremap <leader>cf :ALEFix<CR>
+" let g:ale_fixers = { }
+" let g:ale_fixers['javascript'] = ['prettier']
+" let g:ale_javascript_prettier_use_local_config = 1
+" nnoremap <leader>cf :ALEFix<CR>
 
 " }}}
 
@@ -392,19 +399,6 @@ let g:UltiSnipsJumpBackwardTrigger='<c-k>'
 let g:UltiSnipsEditSplit='vertical'
 
 " }}}
-
-
-
-" Markown and alike (Pencil plugin) {{{
-
-let g:pencil#textwidth = 120
-augroup pencil
-  autocmd!
-  autocmd FileType markdown,mkd,text call pencil#init({'wrap': 'hard'})
-  autocmd Filetype git,gitsendemail,*commit*,*COMMIT* call pencil#init({'wrap': 'hard'})
-augroup END
-
-"}}}
 
 
 
@@ -461,7 +455,7 @@ map <Esc>[D <Left>
 
 
 " bind \ (backward slash) to grep shortcut
-command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+" command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap <leader>f :Ag<SPACE>
 
 
