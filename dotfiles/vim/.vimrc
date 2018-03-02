@@ -40,6 +40,7 @@ Plugin 'elixir-editors/vim-elixir'      " Elixir syntax highlight
 Plugin 'carlosgaldino/elixir-snippets'  " Elixir snippets
 Plugin 'epmatsw/ag.vim'
 Plugin 'prettier/vim-prettier'
+Plugin 'jeffkreeftmeijer/vim-numbertoggle' " Smart line number toggling
 
 call vundle#end()                       " required
 filetype plugin indent on               " required
@@ -100,7 +101,7 @@ set statusline=2                    " show custom statusline (Airline)
 set laststatus=2                    " show custom statusline (Airline) with no splits
 set noshowmode                      " disable default mode indication
 syntax enable                       " syntax highlignting
-" set cursorline                      " highlight current line
+set number relativenumber
 set wildmenu                        " visual autocomplete for command menu
 set visualbell                      " visual bell instead of beeping
 set showcmd                         " show command in bottom bar
@@ -121,13 +122,6 @@ set synmaxcol=128
 syntax sync minlines=256
 set lazyredraw
 
-:set number relativenumber
-
-:augroup numbertoggle
-:  autocmd!
-:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
-:augroup END
 
 " }}}
 
@@ -136,16 +130,6 @@ set lazyredraw
 hi link javaScriptTemplateDelim String
 hi link javaScriptTemplateVar Text
 hi link javaScriptTemplateString String
-
-
-" Movement {{{
-
-" Commented due to movement issues
-"nnoremap j gj                      " move down by visual line (not real line)
-"nnoremap k gk                      " move up by visual line (not real line)
-
-" }}}
-
 
 
 " Splits {{{
@@ -288,7 +272,7 @@ endif
 
 " NERDTree {{{
 
-let NERDTreeIgnore=['\~$', 'node_modules[[dir]]']
+let NERDTreeIgnore=['\~$', 'node_modules[[dir]]', 'deps[[dir]]']
 
 let NERDTreeShowHidden=1           " show hidden files
 let NERDTreeMouseMode=2            " toggle dirs vith single click
@@ -360,17 +344,6 @@ let g:flow#enable = 0               " let Ale do the checking
 nnoremap <leader>cf :Prettier<CR>
 
 " }}}
-
-
-" Ale {{{
-
-" let g:ale_fixers = { }
-" let g:ale_fixers['javascript'] = ['prettier']
-" let g:ale_javascript_prettier_use_local_config = 1
-" nnoremap <leader>cf :ALEFix<CR>
-
-" }}}
-
 
 
 " Vim-Javascript {{{
