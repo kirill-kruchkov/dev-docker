@@ -6,11 +6,9 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'       " let Vundle manage Vundle, required
-
 Plugin 'dracula/vim'                    " Dracula theme
 Plugin 'croaker/mustang-vim'            " Mustang theme
 Plugin 'bcicen/vim-vice'                " Vice theme
-Plugin 'cocopon/iceberg.vim'            " Iceberg theme
 Plugin 'vim-airline/vim-airline'        " Status line and text
 Plugin 'vim-airline/vim-airline-themes' " Status line themes
 Plugin 'edkolev/tmuxline.vim'           " Sync TMUX theme with airline
@@ -33,7 +31,6 @@ Plugin 'honza/vim-snippets'             " Snippets
 Plugin 'elmcast/elm-vim'                " Elm support
 Plugin 'ternjs/tern_for_vim'            " Tern for Vim
 Plugin 'AlessandroYorba/Sierra'         " Sierra color theme
-Plugin 'flazz/vim-colorschemes'
 Plugin 'scrooloose/nerdcommenter'       " Orgasmic comments
 Plugin 'slashmili/alchemist.vim'        " Support for Elixir
 Plugin 'elixir-editors/vim-elixir'      " Elixir syntax highlight
@@ -41,6 +38,7 @@ Plugin 'carlosgaldino/elixir-snippets'  " Elixir snippets
 Plugin 'epmatsw/ag.vim'
 Plugin 'prettier/vim-prettier'
 Plugin 'jeffkreeftmeijer/vim-numbertoggle' " Smart line number toggling
+Plugin 'sonph/onehalf'                  " Color theme
 
 call vundle#end()                       " required
 filetype plugin indent on               " required
@@ -53,7 +51,7 @@ filetype plugin indent on               " required
 
 set hidden                          " allow unsaved buffers
 set timeoutlen=250                  " tune shortcut timeout
-set t_ut=                           " prevent backgound glitches in TMUX
+set ttimeoutlen=10                  " tune keycode timeout
 
 " }}}
 
@@ -91,10 +89,10 @@ let g:NERDTrimTrailingWhitespace=1
 
 " Colors and UI {{{
 set termguicolors                   " enable true color
-silent! colorscheme mustang " theme (silent because plugins might not be installed)
-let s:background = ""
-hi! Normal ctermbg=NONE guibg=NONE
-hi! NonText ctermbg=NONE guibg=NONE
+set background=light
+set t_Co=256
+silent! colorscheme onehalflight " theme (silent because plugins might not be installed)
+let g:airline_theme='onehalflight'
 let g:airline_powerline_fonts=1     " use powerline fonts in status line (Airline)
 let g:airline_skip_empty_sections=1 " do not show empty sections in Airline
 set statusline=2                    " show custom statusline (Airline)
@@ -111,9 +109,6 @@ set history=1000                    " command line history levels
 set scrolloff=10                    " lines around cursor
 " overflow background
 execute "set colorcolumn=" . join(range(81,335), ',')
-" autocomplete menu colors (not covered in dracula theme)
-highlight Pmenu ctermfg=NONE ctermbg=236 cterm=NONE guifg=NONE guibg=#64666d
-highlight PmenuSel ctermfg=NONE ctermbg=24 cterm=NONE guifg=NONE guibg=#204a87
 
 set textwidth=120
 set colorcolumn=+1
@@ -170,7 +165,6 @@ nmap <leader>+ <Plug>AirlineSelectNextTab
 " See: https://habrahabr.ru/post/98393/
 " TODO: https://github.com/lyokha/vim-xkbswitch
 
-"set keymap=russian-jcukenmac        " use custom keymap (Ctrl + 6 or Ctrl + ^ to switch)
 set iminsert=0
 set imsearch=0
 
@@ -273,7 +267,7 @@ endif
 " NERDTree {{{
 
 let NERDTreeIgnore=['\~$', 'node_modules[[dir]]', 'deps[[dir]]']
-
+let g:NERDTreeWinPos = "left"
 let NERDTreeShowHidden=1           " show hidden files
 let NERDTreeMouseMode=2            " toggle dirs vith single click
 " open in sidebar
@@ -333,7 +327,7 @@ nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 " Vim-Flow {{{
 
-let g:flow#enable = 0               " let Ale do the checking
+let g:flow#enable = 1               " let Ale do the checking
 
 " }}}
 
@@ -372,7 +366,6 @@ let g:UltiSnipsJumpBackwardTrigger='<c-k>'
 let g:UltiSnipsEditSplit='vertical'
 
 " }}}
-
 
 
 " Pane navigation & seamless TMUX integration {{{
