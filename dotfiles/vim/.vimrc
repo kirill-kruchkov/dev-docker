@@ -89,10 +89,10 @@ let g:NERDTrimTrailingWhitespace=1
 
 " Colors and UI {{{
 set termguicolors                   " enable true color
-set background=light
+set background=dark
 set t_Co=256
-silent! colorscheme onehalflight " theme (silent because plugins might not be installed)
-let g:airline_theme='onehalflight'
+silent! colorscheme onehalfdark " theme (silent because plugins might not be installed)
+let g:airline_theme='onehalfdark'
 let g:airline_powerline_fonts=1     " use powerline fonts in status line (Airline)
 let g:airline_skip_empty_sections=1 " do not show empty sections in Airline
 set statusline=2                    " show custom statusline (Airline)
