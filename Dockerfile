@@ -124,4 +124,4 @@ EXPOSE 3000
 EXPOSE 3001
 EXPOSE 80
 
-ENTRYPOINT ["/bin/zsh"]
+ENTRYPOINT ["/bin/zsh", "-c", "tmux"]
