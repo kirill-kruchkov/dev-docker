@@ -1,6 +1,7 @@
 " Package Manager (Vundle) {{{
 
 set nocompatible                    " be iMproved, required
+set shell=/bin/zsh
 filetype off                        " required
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -25,6 +26,9 @@ Plugin 'flowtype/vim-flow'              " Flow-type autocomplete
 Plugin 'cohama/lexima.vim'              " Autoclose parens, quotes etc
 Plugin 'jelera/vim-javascript-syntax'   " VIM Javascript syntax with ES2015 template strings support
 Plugin 'w0rp/ale'                       " Async linter for vim 8 (https://github.com/w0rp/ale)
+" Plugin 'plasticboy/vim-markdown'
+" Plugin 'mattly/vim-markdown-enhancements' " MultiMarkdown and CriticMarkup extensions
+" Plugin 'reedes/vim-pencil'              " Working with prose-oriented filetypes (wrapping, formatting etc)
 Plugin 'terryma/vim-multiple-cursors'   " Multiple cursorn on Ctrl+n (skip via Ctrl+x)
 Plugin 'SirVer/ultisnips'               " Snippets engine
 Plugin 'honza/vim-snippets'             " Snippets
@@ -37,6 +41,11 @@ Plugin 'elixir-editors/vim-elixir'      " Elixir syntax highlight
 Plugin 'carlosgaldino/elixir-snippets'  " Elixir snippets
 Plugin 'epmatsw/ag.vim'
 Plugin 'prettier/vim-prettier'
+Plugin 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+Plugin 'reasonml-editor/vim-reason-plus'
 Plugin 'jeffkreeftmeijer/vim-numbertoggle' " Smart line number toggling
 Plugin 'sonph/onehalf'                  " Color theme
 
@@ -50,8 +59,10 @@ filetype plugin indent on               " required
 " Essentials {{{
 
 set hidden                          " allow unsaved buffers
+set showtabline=0
 set timeoutlen=250                  " tune shortcut timeout
 set ttimeoutlen=10                  " tune keycode timeout
+" set t_ut=                           " prevent backgound glitches in TMUX
 
 " }}}
 
@@ -93,6 +104,8 @@ set background=dark
 set t_Co=256
 silent! colorscheme onehalfdark " theme (silent because plugins might not be installed)
 let g:airline_theme='onehalfdark'
+" hi! Normal ctermbg=NONE guibg=NONE
+" hi! NonText ctermbg=NONE guibg=NONE
 let g:airline_powerline_fonts=1     " use powerline fonts in status line (Airline)
 let g:airline_skip_empty_sections=1 " do not show empty sections in Airline
 set statusline=2                    " show custom statusline (Airline)
@@ -100,6 +113,7 @@ set laststatus=2                    " show custom statusline (Airline) with no s
 set noshowmode                      " disable default mode indication
 syntax enable                       " syntax highlignting
 set number relativenumber
+" set cursorline                      " highlight current line
 set wildmenu                        " visual autocomplete for command menu
 set visualbell                      " visual bell instead of beeping
 set showcmd                         " show command in bottom bar
@@ -165,6 +179,7 @@ nmap <leader>+ <Plug>AirlineSelectNextTab
 " See: https://habrahabr.ru/post/98393/
 " TODO: https://github.com/lyokha/vim-xkbswitch
 
+"set keymap=russian-jcukenmac        " use custom keymap (Ctrl + 6 or Ctrl + ^ to switch)
 set iminsert=0
 set imsearch=0
 
@@ -266,7 +281,7 @@ endif
 
 " NERDTree {{{
 
-let NERDTreeIgnore=['\~$', 'node_modules[[dir]]', 'deps[[dir]]']
+let NERDTreeIgnore=['\~$', 'node_modules[[dir]]', 'deps[[dir]]', '.DS_Store']
 let g:NERDTreeWinPos = "left"
 let NERDTreeShowHidden=1           " show hidden files
 let NERDTreeMouseMode=2            " toggle dirs vith single click
@@ -287,12 +302,12 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 if executable("ag")
     let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
 endif
-let g:CtrlSpaceSearchTiming = 500
+let g:CtrlSpaceSearchTiming = 150
 let g:airline_exclude_preview = 1
 let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
 let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
 let g:CtrlSpaceSaveWorkspaceOnExit = 1
-let g:CtrlSpaceIgnoredFiles = '\(ios\|android\)[\/]'
+let g:CtrlSpaceIgnoredFiles = '\(node_modules\|ios\|android\)[\/]'
 
 nnoremap <silent><Tab> :CtrlSpace<CR>
 nnoremap <silent><Leader>p :CtrlSpace O<CR>
@@ -308,13 +323,11 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.*', '*.jade']
 
 " }}}
 
-
-
 " YouCompleteMe {{{
 
 set shortmess+=c                    " disable annoying auotocompletion messages
 let g:ycm_complete_in_comments=1    " completion in comments
-let g:ycm_min_num_of_chars_for_completion=1
+let g:ycm_min_num_of_chars_for_completion=3
 let g:ycm_semantic_triggers = {
     \ 'elm' : ['.'],
     \}
@@ -327,7 +340,7 @@ nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 " Vim-Flow {{{
 
-let g:flow#enable = 1               " let Ale do the checking
+let g:flow#enable = 0               " let Ale do the checking
 
 " }}}
 
@@ -340,11 +353,19 @@ nnoremap <leader>cf :Prettier<CR>
 " }}}
 
 
+" Ale {{{
+"
+let g:ale_linters = { 'javascript': ['eslint'] }
+
+" }}}
+
+
+
 " Vim-Javascript {{{
 
 let g:javascript_plugin_jsdoc=1
 let g:javascript_plugin_ngdoc=1
-let g:javascript_plugin_flow=1
+let g:javascript_plugin_flow=0
 
 " }}}
 
@@ -353,6 +374,16 @@ let g:javascript_plugin_flow=1
 " Elm-Vim {{{
 
 let g:elm_setup_keybindings = 0
+
+" }}}
+
+
+" OCaml / ReasonML {{{
+
+let g:LanguageClient_serverCommands = {
+    \ 'reason': ['ocaml-language-server', '--stdio'],
+    \ 'ocaml': ['ocaml-language-server', '--stdio'],
+    \ }
 
 " }}}
 
@@ -366,6 +397,20 @@ let g:UltiSnipsJumpBackwardTrigger='<c-k>'
 let g:UltiSnipsEditSplit='vertical'
 
 " }}}
+
+
+
+" Markown and alike (Pencil plugin) {{{
+
+" let g:pencil#textwidth = 120
+" augroup pencil
+"   autocmd!
+"   autocmd FileType markdown,mkd,text call pencil#init({'wrap': 'hard'})
+"   autocmd Filetype git,gitsendemail,*commit*,*COMMIT* call pencil#init({'wrap': 'hard'})
+" augroup END
+"
+"}}}
+
 
 
 " Pane navigation & seamless TMUX integration {{{

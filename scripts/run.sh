@@ -1,1 +1,1 @@
-docker run -it --rm $IMAGE_NAME $1
+docker run -it --rm
