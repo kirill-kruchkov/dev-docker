@@ -7,9 +7,6 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'       " let Vundle manage Vundle, required
-Plugin 'dracula/vim'                    " Dracula theme
-Plugin 'croaker/mustang-vim'            " Mustang theme
-Plugin 'bcicen/vim-vice'                " Vice theme
 Plugin 'vim-airline/vim-airline'        " Status line and text
 Plugin 'vim-airline/vim-airline-themes' " Status line themes
 Plugin 'edkolev/tmuxline.vim'           " Sync TMUX theme with airline
@@ -17,35 +14,21 @@ Plugin 'CursorLineCurrentWindow'        " Hide cursor line in inactive splits
 Plugin 'scrooloose/nerdtree'            " NERDTree (Navigation bar)
 Plugin 'Xuyuanp/nerdtree-git-plugin'    " NERDTree git integration
 Plugin 'sjl/gundo.vim'                  " GUndo (Undo tree)
-Plugin 'wincent/terminus'               " Better terminal integration (paste, cursor shape, mouse integration)
-Plugin 'tpope/vim-fugitive'             " Git integration
 Plugin 'vim-ctrlspace/vim-ctrlspace'    " Navigation and fuzzy search
 Plugin 'editorconfig/editorconfig-vim'	" EditorConfig
 Plugin 'valloric/youcompleteme'         " Autocomplete solution
-Plugin 'flowtype/vim-flow'              " Flow-type autocomplete
 Plugin 'cohama/lexima.vim'              " Autoclose parens, quotes etc
 Plugin 'jelera/vim-javascript-syntax'   " VIM Javascript syntax with ES2015 template strings support
 Plugin 'w0rp/ale'                       " Async linter for vim 8 (https://github.com/w0rp/ale)
-" Plugin 'plasticboy/vim-markdown'
-" Plugin 'mattly/vim-markdown-enhancements' " MultiMarkdown and CriticMarkup extensions
-" Plugin 'reedes/vim-pencil'              " Working with prose-oriented filetypes (wrapping, formatting etc)
 Plugin 'terryma/vim-multiple-cursors'   " Multiple cursorn on Ctrl+n (skip via Ctrl+x)
 Plugin 'SirVer/ultisnips'               " Snippets engine
 Plugin 'honza/vim-snippets'             " Snippets
-Plugin 'elmcast/elm-vim'                " Elm support
-Plugin 'ternjs/tern_for_vim'            " Tern for Vim
-Plugin 'AlessandroYorba/Sierra'         " Sierra color theme
 Plugin 'scrooloose/nerdcommenter'       " Orgasmic comments
 Plugin 'slashmili/alchemist.vim'        " Support for Elixir
 Plugin 'elixir-editors/vim-elixir'      " Elixir syntax highlight
 Plugin 'carlosgaldino/elixir-snippets'  " Elixir snippets
 Plugin 'epmatsw/ag.vim'
 Plugin 'prettier/vim-prettier'
-Plugin 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
-Plugin 'reasonml-editor/vim-reason-plus'
 Plugin 'jeffkreeftmeijer/vim-numbertoggle' " Smart line number toggling
 Plugin 'sonph/onehalf'                  " Color theme
 
@@ -99,7 +82,9 @@ let g:NERDTrimTrailingWhitespace=1
 
 
 " Colors and UI {{{
-set termguicolors                   " enable true color
+if exists('+termguicolors')
+  set termguicolors                   " enable true color
+endif
 set background=dark
 set t_Co=256
 silent! colorscheme onehalfdark " theme (silent because plugins might not be installed)
@@ -328,9 +313,6 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.*', '*.jade']
 set shortmess+=c                    " disable annoying auotocompletion messages
 let g:ycm_complete_in_comments=1    " completion in comments
 let g:ycm_min_num_of_chars_for_completion=3
-let g:ycm_semantic_triggers = {
-    \ 'elm' : ['.'],
-    \}
 nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
@@ -366,24 +348,6 @@ let g:ale_linters = { 'javascript': ['eslint'] }
 let g:javascript_plugin_jsdoc=1
 let g:javascript_plugin_ngdoc=1
 let g:javascript_plugin_flow=0
-
-" }}}
-
-
-
-" Elm-Vim {{{
-
-let g:elm_setup_keybindings = 0
-
-" }}}
-
-
-" OCaml / ReasonML {{{
-
-let g:LanguageClient_serverCommands = {
-    \ 'reason': ['ocaml-language-server', '--stdio'],
-    \ 'ocaml': ['ocaml-language-server', '--stdio'],
-    \ }
 
 " }}}
 

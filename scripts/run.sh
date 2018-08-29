@@ -1,1 +1,1 @@
-docker run -it --rm
+docker run -it --rm -e TZ=Europe/Amsterdam "$@"

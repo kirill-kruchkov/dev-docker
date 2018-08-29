@@ -1,0 +1,83 @@
+wtf:
+  colors:
+    border:
+      focusable: darkslateblue
+      focused: orange
+      normal: gray
+  grid:
+    columns: [20, 20, 20, 20, 20, 20]
+    rows: [10, 15, 15, 5]
+  refreshInterval: 1
+  mods:
+    clocks:
+      colors:
+        rows:
+          even: "lightblue"
+          odd: "white"
+      enabled: true
+      locations:
+        New York: "America/New_York"
+        London: "Europe/London"
+        Amsterdam: "Europe/Amsterdam"
+        Moscow: "Europe/Moscow"
+        Tyumen: "Asia/Yekaterinburg"
+        Tokyo: "Asia/Tokyo"
+      position:
+        top: 0
+        left: 0
+        height: 1
+        width: 2
+      refreshInterval: 15
+      sort: "chronological"
+    security:
+      enabled: true
+      position:
+        top: 0
+        left: 4
+        height: 1
+        width: 2
+      refreshInterval: 3600
+    prettyweather:
+      enabled: true
+      city: "Amsterdam"
+      position:
+        top: 0
+        left: 2
+        height: 1
+        width: 2
+      refreshInterval: 300
+      unit: "c"
+      view: 0
+      language: "en"
+    status:
+      enabled: false
+      position:
+        top: 3
+        left: 0
+        height: 1
+        width: 6
+      refreshInterval: 1
+    textfile:
+      enabled: true
+      filePath: "~/Documents/Notes/_Activity_.md"
+      position:
+        top: 1
+        left: 0
+        height: 2
+        width: 4
+      refreshInterval: 30
+    todo:
+      checkedIcon: "X"
+      colors:
+        checked: gray
+        highlight:
+          fore: "black"
+          back: "orange"
+      enabled: true
+      filename: "todo.yml"
+      position:
+        top: 1
+        left: 4
+        height: 2
+        width: 2
+      refreshInterval: 3600
